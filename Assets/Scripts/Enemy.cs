@@ -21,9 +21,9 @@ public class Enemy : MonoBehaviour
         distanceTraveled = 0;
     }
 
-    public void Update()
+    public void FixedUpdate()
     {
-        distanceTraveled += speed * Time.deltaTime;
+        distanceTraveled += speed * Time.fixedDeltaTime;
         transform.position = path.InterpolateDistanceWorldSpace(distanceTraveled);
 
         if(distanceTraveled > path.Length)
