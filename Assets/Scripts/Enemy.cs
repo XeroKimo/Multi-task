@@ -9,9 +9,13 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int damage;
+    public float health;
     public float speed;
     public Town target;
     public Spline2DComponent path;
+
+    public delegate void OnDeath(Enemy enemy);
+    public event OnDeath onDeathEvent;
 
     public float distanceTraveled = 0;
 
@@ -30,6 +34,16 @@ public class Enemy : MonoBehaviour
         {
             target.ApplyDamage(damage);
             gameObject.SetActive(false);
+        }
+    }
+
+    public void ApplyDamage(int damage)
+    {
+        health -= damage;
+        if (health < 0)
+        {
+            health = 0;
+            onDeathEvent?.Invoke(this);
         }
     }
 }
