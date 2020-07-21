@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 200
   speed: 1
-  target: {fileID: 307512075}
+  money: 0
   path: {fileID: 307996823}
   distanceTraveled: 0
 --- !u!135 &769385609
