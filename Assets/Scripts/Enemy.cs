@@ -1,5 +1,5 @@
 ﻿//Module: Enemy
-//Version: 0.11
+//Version: 0.13
 
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +9,17 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     public int damage;
-    public float health;
     public float speed;
-    public Town target;
+    public int money;
+    public int m_health { get; private set; }
+
     public Spline2DComponent path;
+    public float distanceTraveled = 0;
 
     public delegate void OnDeath(Enemy enemy);
-    public event OnDeath onDeathEvent;
+    public event OnDeath onDeath;
+    public event OnDeath onPathFinished;
 
-    public float distanceTraveled = 0;
 
     public void OnEnable()
     {
@@ -32,18 +34,23 @@ public class Enemy : MonoBehaviour
 
         if(distanceTraveled > path.Length)
         {
-            target.ApplyDamage(damage);
+            onPathFinished?.Invoke(this);
             gameObject.SetActive(false);
         }
     }
 
+    public void SetHealth(int health)
+    {
+        Debug.Assert(health > 0, "Setting enemy health must be greater than 0");
+        m_health = health;
+    }
+
     public void ApplyDamage(int damage)
     {
-        health -= damage;
-        if (health < 0)
+        m_health -= damage;
+        if(m_health < 0)
         {
-            health = 0;
-            onDeathEvent?.Invoke(this);
+            onDeath?.Invoke(this);
         }
     }
 }
