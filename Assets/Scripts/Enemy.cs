@@ -11,7 +11,9 @@ public class Enemy : MonoBehaviour
     public int damage;
     public float speed;
     public int money;
-    public int m_health { get; private set; }
+    public int health { get; private set; }
+    [SerializeField]
+    private int m_maxHealth;
 
     public Spline2DComponent path { get; private set; }
     public float distanceTraveled { get; private set; }
@@ -40,8 +42,8 @@ public class Enemy : MonoBehaviour
 
     public void ApplyDamage(int damage)
     {
-        m_health -= damage;
-        if(m_health < 0)
+        health -= damage;
+        if(health < 0)
         {
             onDeath?.Invoke(this);
             Destroy(gameObject);    //For Debugging
@@ -56,5 +58,6 @@ public class Enemy : MonoBehaviour
         this.path = path;
         distanceTraveled = 0;
         transform.position = path.GetPointWorldSpace(0);
+        health = m_maxHealth;
     }
 }
