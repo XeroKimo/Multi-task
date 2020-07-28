@@ -15,11 +15,13 @@ public class Tower : MonoBehaviour
     public Projectile projectilePrefab;
     public int damage;
     public int projectileSpeed;
+    public float unitSize;
+    public float range;
 
     private void Enemy_onDeathEvent(Enemy enemy)
     {
         enemiesInRange.Remove(enemy);
-        enemy.onDeathEvent -= Enemy_onDeathEvent;
+        enemy.onDeath -= Enemy_onDeathEvent;
     }
 
     public void OnTriggerEnter(Collider collision)
@@ -28,7 +30,8 @@ public class Tower : MonoBehaviour
         if (enemy)
         {
             enemiesInRange.Add(enemy);
-            enemy.onDeathEvent += Enemy_onDeathEvent;
+            enemy.onDeath += Enemy_onDeathEvent;
+            Debug.Log("enter");
         }
     }
 
@@ -38,8 +41,14 @@ public class Tower : MonoBehaviour
         if (enemy)
         {
             enemiesInRange.Remove(enemy);
-            enemy.onDeathEvent -= Enemy_onDeathEvent;
+            enemy.onDeath -= Enemy_onDeathEvent;
         }
+    }
+
+    public void Start()
+    {
+        GetComponent<SphereCollider>().radius = range;
+        transform.localScale = new Vector3(unitSize, unitSize, 1);
     }
 
     public void FixedUpdate()
@@ -47,12 +56,12 @@ public class Tower : MonoBehaviour
         cooldownTimer -= Time.deltaTime;
         if (cooldownTimer <= 0)
         {
-            cooldownTimer = cooldown;
             target = GetFirstEnemy();
             if (target)
             {
                 transform.right = target.transform.position - transform.position;
                 FireProjectile();
+                cooldownTimer = cooldown;
             }
         }
     }
