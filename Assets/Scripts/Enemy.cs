@@ -1,5 +1,5 @@
-﻿//Module: Enemy
-//Version: 0.13
+﻿//Module: Wave System
+//Version: 0.1
 
 using System.Collections;
 using System.Collections.Generic;
@@ -13,8 +13,8 @@ public class Enemy : MonoBehaviour
     public int money;
     public int m_health { get; private set; }
 
-    public Spline2DComponent path;
-    public float distanceTraveled = 0;
+    public Spline2DComponent path { get; private set; }
+    public float distanceTraveled { get; private set; }
 
     public delegate void OnDeath(Enemy enemy);
     public event OnDeath onDeath;
@@ -23,8 +23,6 @@ public class Enemy : MonoBehaviour
 
     public void OnEnable()
     {
-        transform.position = path.GetPointWorldSpace(0);
-        distanceTraveled = 0;
     }
 
     public void FixedUpdate()
@@ -35,14 +33,9 @@ public class Enemy : MonoBehaviour
         if(distanceTraveled > path.Length)
         {
             onPathFinished?.Invoke(this);
-            gameObject.SetActive(false);
+            Destroy(gameObject);    //For Debugging
+            //gameObject.SetActive(false);
         }
-    }
-
-    public void SetHealth(int health)
-    {
-        Debug.Assert(health > 0, "Setting enemy health must be greater than 0");
-        m_health = health;
     }
 
     public void ApplyDamage(int damage)
@@ -51,6 +44,17 @@ public class Enemy : MonoBehaviour
         if(m_health < 0)
         {
             onDeath?.Invoke(this);
+            Destroy(gameObject);    //For Debugging
+            //gameObject.SetActive(false);
         }
+    }
+
+    public void Reset(Spline2DComponent path)
+    {
+        onDeath = null;
+        onPathFinished = null;
+        this.path = path;
+        distanceTraveled = 0;
+        transform.position = path.GetPointWorldSpace(0);
     }
 }

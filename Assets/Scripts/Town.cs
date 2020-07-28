@@ -1,4 +1,4 @@
-﻿//Module: Lives
+﻿//Module: Wave System
 //Version: 0.1
 
 using System;
@@ -13,7 +13,7 @@ public class Town : MonoBehaviour
 
     public Spline2DComponent[] paths;
 
-    public delegate void OnDeath();
+    public delegate void OnDeath(Town town);
     public event OnDeath onDeathEvent;
 
     public void ApplyDamage(int damage)
@@ -22,7 +22,9 @@ public class Town : MonoBehaviour
         if(m_health < 0)
         {
             m_health = 0;
-            onDeathEvent?.Invoke();
+            onDeathEvent.Invoke(this);
         }
     }
+
+    public bool IsAlive() { return m_health > 0; }
 }
