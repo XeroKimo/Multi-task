@@ -41,7 +41,7 @@ public class GameState : MonoBehaviour
 
     private void Enemy_onDeath(Enemy enemy)
     {
-        m_currency += enemy.money;
+        AddCurrency(enemy.money);
         enemy.onDeath -= Enemy_onDeath;
         enemy.onPathFinished -= Enemy_onPathFinished;
     }
@@ -56,6 +56,20 @@ public class GameState : MonoBehaviour
     private void SceneManager_sceneUnloaded(Scene arg0)
     {
         instance = null;
+    }
+
+    public void AddCurrency(int amount)
+    {
+        m_currency += amount;
+    }
+
+    public bool SpendCurrency(int amount)
+    {
+        if(amount < m_currency)
+            return false;
+
+        m_currency -= amount;
+        return true;
     }
 
     // Start is called before the first frame update
