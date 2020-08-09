@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 //using System.Numerics;
 using UnityEngine;
 
@@ -17,20 +18,31 @@ public class PlayerInputScript : MonoBehaviour
 
     protected void HandlePlayerMovement()
     {
-        Vector3 CurrentPosition = gameObject.transform.position;
+        Vector2 CurrentPosition = gameObject.transform.position;
         CurrentPosition.x += (Input.GetAxis("Horizontal") * m_PlayerSpeed * Time.fixedDeltaTime);
-        CurrentPosition.z += (Input.GetAxis("Vertical") * m_PlayerSpeed * Time.fixedDeltaTime);
+        CurrentPosition.y += (Input.GetAxis("Vertical") * m_PlayerSpeed * Time.fixedDeltaTime);
         gameObject.transform.position = CurrentPosition;
     }
 
     protected void HandlePlayerRotation()
     {
-        Vector3 MousePositionInWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition + Vector3.forward * 10);
-        Vector3 DirectionToMouse = MousePositionInWorld - transform.position;
-        DirectionToMouse.y = 0.0f;
-        DirectionToMouse = DirectionToMouse.normalized;
-        //transform.localRotation = Quaternion.LookRotation(DirectionToMouse);
-        transform.rotation = Quaternion.LookRotation(DirectionToMouse);
+        //Old Code made for 3D
+        //Vector3 MousePositionInWorld = Camera.main.ScreenToWorldPoint(Input.mousePosition /*+ Vector3.up * 10*/);
+        //Vector3 DirectionToMouse = MousePositionInWorld - transform.position;
+        //DirectionToMouse.z = 0.0f;
+        //DirectionToMouse = DirectionToMouse.normalized;
+        ////transform.localRotation = Quaternion.LookRotation(DirectionToMouse);
+        //transform.rotation = Quaternion.LookRotation(DirectionToMouse);
+
+        Vector3 mousePos = Input.mousePosition;
+        mousePos.z = Camera.main.transform.position.z - transform.position.z;
+
+        Vector3 objectPos = Camera.main.WorldToScreenPoint(transform.position);
+        mousePos.x = mousePos.x - objectPos.x;
+        mousePos.y = mousePos.y - objectPos.y;
+
+        float angle = Mathf.Atan2(mousePos.y, mousePos.x) * Mathf.Rad2Deg;
+        transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle - 90.0f));
     }
 
     // Start is called before the first frame update
@@ -56,7 +68,8 @@ public class PlayerInputScript : MonoBehaviour
         if(m_BulletTemplateObject != null && m_BulletFirePoint != null)
         {
             Rigidbody BulletObject = (Rigidbody)Instantiate(m_BulletTemplateObject, m_BulletFirePoint.position, m_BulletFirePoint.rotation);
-            BulletObject.velocity = transform.forward * m_BulletSpeed;
+            //BulletObject.velocity = transform.forward * m_BulletSpeed;
+            BulletObject.velocity = transform.up * m_BulletSpeed;
         }
     }
 
