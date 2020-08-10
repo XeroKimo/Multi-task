@@ -226,7 +226,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_health: 200
   paths:
-  - {fileID: 307996823}
+  - {fileID: 0}
 --- !u!65 &307512076
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -310,7 +310,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 307996822}
-  - component: {fileID: 307996823}
+  - component: {fileID: 307996826}
+  - component: {fileID: 307996825}
+  - component: {fileID: 307996824}
   m_Layer: 0
   m_Name: Path 1
   m_TagString: Untagged
@@ -332,7 +334,7 @@ Transform:
   m_Father: {fileID: 949462540}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &307996823
+--- !u!114 &307996824
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -341,23 +343,69 @@ MonoBehaviour:
   m_GameObject: {fileID: 307996821}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25474e02d87cf5a46b5931c38dc7cb0e, type: 3}
+  m_Script: {fileID: 11500000, guid: d3f2a97c786bfc64bae500d44a070a5a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iterpolationAccuracy: 0.05
+--- !u!60 &307996825
+PolygonCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307996821}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
+  m_Points:
+    m_Paths:
+    - - {x: 0, y: 1}
+      - {x: -0.95105654, y: 0.30901697}
+      - {x: -0.5877852, y: -0.80901706}
+      - {x: 0.58778536, y: -0.80901694}
+      - {x: 0.9510565, y: 0.30901712}
+--- !u!114 &307996826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 307996821}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7622dd3d76f02a2448f775bdc97fe86c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   displayXZ: 0
   points:
-  - {x: -4.686401, y: 1.0161965}
-  - {x: -3.8611078, y: 1.8830612}
-  - {x: -3.222351, y: 2.066327}
-  - {x: -2.565559, y: 1.569132}
-  - {x: -2.3711536, y: 0.7545525}
-  - {x: -1.0789502, y: -0.13352847}
-  - {x: 0.5488674, y: -0.354902}
-  - {x: 2.799057, y: 0.0067247064}
-  - {x: 4.643083, y: -0.4915852}
+  - {x: -4.8165183, y: 0.8782393}
+  - {x: -3.9306152, y: 1.8558965}
+  - {x: -3.2626042, y: 2.0376437}
+  - {x: -2.5844479, y: 1.6707315}
+  - {x: -2.4323235, y: 0.82096064}
+  - {x: -1.2797763, y: -0.066923246}
+  - {x: 0.13768005, y: -0.38751087}
+  - {x: 1.8792896, y: -0.0791803}
+  - {x: 3.110314, y: -0.052420154}
+  - {x: 4.232058, y: -0.42929766}
+  - {x: 4.9805636, y: -0.40701142}
   closed: 0
-  curvature: 0.5
+  curvature: 0.3
   lengthSamplesPerSegment: 5
+  width: 0.2
   showNormals: 0
   normalDisplayLength: 5
   showDistance: 0
@@ -800,7 +848,7 @@ GameObject:
   - component: {fileID: 1763962478}
   - component: {fileID: 1763962477}
   m_Layer: 0
-  m_Name: Spawner
+  m_Name: Town
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -889,7 +937,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_paths:
-  - {fileID: 307996823}
+  - {fileID: 307996826}
 --- !u!4 &1875033059
 Transform:
   m_ObjectHideFlags: 0
