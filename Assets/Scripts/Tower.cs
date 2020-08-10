@@ -15,6 +15,8 @@ public class Tower : MonoBehaviour
     public Projectile projectilePrefab;
     public int damage;
     public int projectileSpeed;
+    public float unitSize;
+    public float range;
 
     private void Enemy_onDeathEvent(Enemy enemy)
     {
@@ -42,17 +44,23 @@ public class Tower : MonoBehaviour
         }
     }
 
+    public void Start()
+    {
+        GetComponent<SphereCollider>().radius = range;
+        transform.localScale = new Vector3(unitSize, unitSize, 1);
+    }
+
     public void FixedUpdate()
     {
         cooldownTimer -= Time.deltaTime;
         if (cooldownTimer <= 0)
         {
-            cooldownTimer = cooldown;
             target = GetFirstEnemy();
             if (target)
             {
                 transform.right = target.transform.position - transform.position;
                 FireProjectile();
+                cooldownTimer = cooldown;
             }
         }
     }
