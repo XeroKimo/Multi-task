@@ -391,6 +391,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5147070208656318980, guid: 776df54d78849d2448d92c1bcc76ff31,
         type: 3}
+      propertyPath: m_TowerTemplateObjects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5147070208656318980, guid: 776df54d78849d2448d92c1bcc76ff31,
+        type: 3}
       propertyPath: m_BulletFirePoint
       value: 
       objectReference: {fileID: 1416805184}
@@ -399,6 +404,12 @@ PrefabInstance:
       propertyPath: m_BulletTemplateObject
       value: 
       objectReference: {fileID: 2934389462392684209, guid: 8106599b8d9322048b82f2021a6640d9,
+        type: 3}
+    - target: {fileID: 5147070208656318980, guid: 776df54d78849d2448d92c1bcc76ff31,
+        type: 3}
+      propertyPath: m_TowerTemplateObjects.Array.data[0]
+      value: 
+      objectReference: {fileID: 8733942160319643944, guid: bd489dd667671404f98aa77001f76567,
         type: 3}
     - target: {fileID: 5147070208656318983, guid: 776df54d78849d2448d92c1bcc76ff31,
         type: 3}
