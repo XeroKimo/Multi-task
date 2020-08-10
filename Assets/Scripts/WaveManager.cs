@@ -42,7 +42,7 @@ public class WaveManager
     public int currentWave;
     private int m_framesSinceWaveStart;
 
-    private List<Spline2DComponent> m_paths;
+    private List<Spline2DRoadComponent> m_paths;
     private int m_selectedPath;
     private Dictionary<string, Enemy> m_enemyTypes;
 
@@ -53,7 +53,7 @@ public class WaveManager
     public event OnWaveStateChange onWaveStarted;
     public event OnWaveStateChange onWaveEnded;
 
-    public WaveManager(List<Spline2DComponent> paths, List<Wave> waves)
+    public WaveManager(List<Spline2DRoadComponent> paths, List<Wave> waves)
     {
         m_paths = paths;
         this.waves = waves;

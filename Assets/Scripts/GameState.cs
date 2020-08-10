@@ -10,7 +10,7 @@ public class GameState : MonoBehaviour
     int m_lives;
 
     [SerializeField]
-    List<Spline2DComponent> m_paths;
+    List<Spline2DRoadComponent> m_paths;
     WaveManager m_waveManager;
 
     public static GameState instance { get; private set; }
