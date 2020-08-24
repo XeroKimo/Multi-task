@@ -183,6 +183,8 @@ public class Tower : MonoBehaviour
 
     public void FireProjectile()
     {
+        if(!m_currentTarget)
+            return;
         Projectile projectile = Instantiate<Projectile>(projectilePrefab, transform.position, Quaternion.identity);
         projectile.SetDamage(damage);
         projectile.SetVelocity((m_currentTarget.transform.position - transform.position) * projectileSpeed);
