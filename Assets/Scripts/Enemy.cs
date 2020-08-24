@@ -60,4 +60,9 @@ public class Enemy : MonoBehaviour
         transform.position = path.GetPointWorldSpace(0);
         health = m_maxHealth;
     }
+
+    public float GetPercentDistanceTraveled()
+    {
+        return path.DistanceToLinearT(distanceTraveled);
+    }
 }

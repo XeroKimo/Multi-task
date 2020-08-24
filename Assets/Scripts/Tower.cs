@@ -3,14 +3,28 @@ using System.Collections.Generic;
 using UnityEngine;
 
 using System.Linq;
+using System.IO;
+//Module: Core Module
+//Version: 0.1
+
+public enum TargetScheme
+{
+    First,
+    Last,
+    Closest,
+    Strongest
+}
 
 public class Tower : MonoBehaviour
 {
-    private Enemy target;
-    private List<Enemy> enemiesInRange = new List<Enemy>();
+    private delegate void TargetFunction(Collider2D other);
+
+    private TargetScheme m_targetScheme;
+    private TargetFunction m_targetFunction;
+    private Enemy m_currentTarget;
 
     private float cooldownTimer = 0;
-    public float cooldown;
+    public float attackSpeed;
 
     public Projectile projectilePrefab;
     public int damage;
@@ -18,80 +32,159 @@ public class Tower : MonoBehaviour
     public float unitSize;
     public float range;
 
-    private void Enemy_onDeathEvent(Enemy enemy)
+    public Animator animator;
+
+    private void Awake()
     {
-        enemiesInRange.Remove(enemy);
-        enemy.onDeath -= Enemy_onDeathEvent;
+        m_targetScheme = TargetScheme.First;
+        m_targetFunction = CompareFirstTarget;
+        m_currentTarget = null;
     }
 
-    public void OnTriggerEnter(Collider collision)
+    private void CompareFirstTarget(Collider2D other)
     {
-        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-        if (enemy)
+        Enemy otherEnemy = other.GetComponent<Enemy>();
+        if(!m_currentTarget)
         {
-            enemiesInRange.Add(enemy);
-            enemy.onDeath += Enemy_onDeathEvent;
+            m_currentTarget = otherEnemy;
+            return;
         }
+        //Compare percent distances of the 2 enemies
+
+        if(otherEnemy.GetPercentDistanceTraveled() > m_currentTarget.GetPercentDistanceTraveled())
+            m_currentTarget = otherEnemy;
+    }
+    
+    private void CompareLastTarget(Collider2D other)
+    {
+        Enemy otherEnemy = other.GetComponent<Enemy>();
+        if(!m_currentTarget)
+        {
+            m_currentTarget = otherEnemy;
+            return;
+        }
+        if(otherEnemy.GetPercentDistanceTraveled() < m_currentTarget.GetPercentDistanceTraveled())
+            m_currentTarget = otherEnemy;
+    }
+    
+    private void CompareClosestTarget(Collider2D other)
+    {
+        Enemy otherEnemy = other.GetComponent<Enemy>();
+        if(!m_currentTarget)
+        {
+            m_currentTarget = otherEnemy;
+            return;
+        }
+
+        float distanceToOtherEnemy = Vector3.Distance(transform.position, other.transform.position);
+        float distanceToCurrent = Vector3.Distance(transform.position, m_currentTarget.transform.position);
+
+        if(distanceToOtherEnemy < distanceToCurrent)
+            m_currentTarget = otherEnemy;
+    }
+    
+    private void CompareStrongestTarget(Collider2D other)
+    {
+        Enemy otherEnemy = other.GetComponent<Enemy>();
+        if(!m_currentTarget)
+        {
+            m_currentTarget = otherEnemy;
+            return;
+        }
+
+        if(otherEnemy.health > m_currentTarget.health)
+            m_currentTarget = otherEnemy;
     }
 
-    public void OnTriggerExit(Collider collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
-        if (enemy)
-        {
-            enemiesInRange.Remove(enemy);
-            enemy.onDeath -= Enemy_onDeathEvent;
-        }
+        if(collision.tag == "Enemy" && !m_currentTarget)
+            m_currentTarget = collision.GetComponent<Enemy>();
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.tag == "Enemy")
+            m_targetFunction(collision);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(collision.GetComponent<Enemy>() == m_currentTarget)
+            m_currentTarget = null;
     }
 
     public void Start()
     {
-        GetComponent<SphereCollider>().radius = range;
+        GetComponent<CircleCollider2D>().radius = range;
         transform.localScale = new Vector3(unitSize, unitSize, 1);
+        animator.speed = attackSpeed;
+    }
+
+    public void Update()
+    {
+        //For debugging purposes
+        if(Input.GetKeyDown(KeyCode.A))
+            PreviousTargetScheme();
+        if(Input.GetKeyDown(KeyCode.D))
+            NextTargetScheme();
+        //End debugging purposes
     }
 
     public void FixedUpdate()
     {
-        cooldownTimer -= Time.deltaTime;
-        if (cooldownTimer <= 0)
+        if(m_currentTarget)
         {
-            target = GetFirstEnemy();
-            if (target)
-            {
-                transform.right = target.transform.position - transform.position;
-                FireProjectile();
-                cooldownTimer = cooldown;
-            }
+            //Set animator fire bool to true
+            animator.SetBool("Fire", true);
+            Vector2 difference = m_currentTarget.transform.position - transform.position;
+            transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(difference.y, difference.x) / Mathf.PI * 180);
+        }
+        else
+        {
+            //Set animator fire bool to false
+            animator.SetBool("Fire", false);
         }
     }
 
-    private Enemy GetFirstEnemy()
+    public void NextTargetScheme()
     {
-        if (enemiesInRange.Count == 0) return null;
-        Enemy target = enemiesInRange[0];
-        enemiesInRange.ForEach(enemy => {
-            if (enemy.distanceTraveled > target.distanceTraveled)
-                target = enemy;
-        });
-        return target;
+        m_targetScheme = (TargetScheme)(((int)m_targetScheme + 1) % 4);
+        SelectTargetFunction();
     }
 
-    private Enemy GetLastEnemy()
+    public void PreviousTargetScheme()
     {
-        if (enemiesInRange.Count == 0) return null;
-        Enemy target = enemiesInRange[0];
-        enemiesInRange.ForEach(enemy => {
-            if (enemy.distanceTraveled < target.distanceTraveled)
-                target = enemy;
-        });
-        return target;
+        int targetScheme = (int)m_targetScheme - 1;
+        if(targetScheme < 0)
+            targetScheme += 4;
+        m_targetScheme = (TargetScheme)targetScheme;
+        SelectTargetFunction();
     }
 
-    private void FireProjectile()
+    private void SelectTargetFunction()
     {
-        if (!target) return;
-        Projectile projectile = Instantiate<Projectile>(projectilePrefab, transform.position, transform.rotation);
+        switch(m_targetScheme)
+        {
+        case TargetScheme.First:
+            m_targetFunction = CompareFirstTarget;
+            break;
+        case TargetScheme.Last:
+            m_targetFunction = CompareLastTarget;
+            break;
+        case TargetScheme.Closest:
+            m_targetFunction = CompareClosestTarget;
+            break;
+        case TargetScheme.Strongest:
+            m_targetFunction = CompareStrongestTarget;
+            break;
+        }
+    }
+
+    public void FireProjectile()
+    {
+        Projectile projectile = Instantiate<Projectile>(projectilePrefab, transform.position, Quaternion.identity);
         projectile.SetDamage(damage);
-        projectile.SetVelocity((target.transform.position - transform.position) * projectileSpeed);
+        projectile.SetVelocity((m_currentTarget.transform.position - transform.position) * projectileSpeed);
     }
 }
