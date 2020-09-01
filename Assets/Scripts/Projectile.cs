@@ -6,29 +6,30 @@ public class Projectile : MonoBehaviour
 {
     private int damage;
     private Vector2 velocity;
-    private Rigidbody cRigidbody;
+    private Rigidbody2D cRigidbody;
     private Tower source;
 
     public delegate void OnDeath();
     public event OnDeath onDeathEvent;
 
-    void Start()
+    void Awake()
     {
-        cRigidbody = gameObject.GetComponent<Rigidbody>();
+        cRigidbody = gameObject.GetComponent<Rigidbody2D>();
     }
 
-    public void OnTriggerEnter(Collider collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
         Enemy enemy = collision.gameObject.GetComponent<Enemy>();
         if (enemy)
         {
             enemy.ApplyDamage(damage);
         }
+        Debug.Log(collision.gameObject.name);
     }
 
     private void FixedUpdate()
     {
-        cRigidbody.MovePosition(transform.position + new Vector3(velocity.x, velocity.y)*Time.deltaTime);
+        cRigidbody.MovePosition(transform.position + new Vector3(velocity.x, velocity.y) * Time.fixedDeltaTime);
         if (isOutOfBounds())
         {
             onDeathEvent?.Invoke();

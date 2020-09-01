@@ -14,8 +14,8 @@ TagManager:
   - UI
   - 
   - 
-  - 
-  - 
+  - Unit Collider
+  - Path Collider
   - 
   - 
   - 
@@ -39,6 +39,18 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: Background
+    uniqueID: 3028946541
+    locked: 0
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Towers
+    uniqueID: 3471080325
+    locked: 0
+  - name: Enemies
+    uniqueID: 662037657
+    locked: 0
+  - name: Projectiles
+    uniqueID: 149755149
     locked: 0
