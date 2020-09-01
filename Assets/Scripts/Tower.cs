@@ -5,7 +5,7 @@ using UnityEngine;
 using System.Linq;
 using System.IO;
 //Module: Core Module
-//Version: 0.1
+//Version: 0.11
 
 public enum TargetScheme
 {
@@ -22,6 +22,7 @@ public class Tower : MonoBehaviour
     private TargetScheme m_targetScheme;
     private TargetFunction m_targetFunction;
     private Enemy m_currentTarget;
+    private Enemy m_nextTarget;
 
     private float cooldownTimer = 0;
     public float attackSpeed;
@@ -34,11 +35,46 @@ public class Tower : MonoBehaviour
 
     public Animator animator;
 
+    public CircleCollider2D towerDetectionHitbox { get; private set; }
+
     private void Awake()
     {
         m_targetScheme = TargetScheme.First;
         m_targetFunction = CompareFirstTarget;
         m_currentTarget = null;
+    }
+
+    private void Start()
+    {
+        GetComponent<CircleCollider2D>().radius = range;
+        transform.localScale = new Vector3(unitSize, unitSize, 1);
+        animator.speed = attackSpeed;
+    }
+
+    private void Update()
+    {
+        //For debugging purposes
+        if(Input.GetKeyDown(KeyCode.A))
+            PreviousTargetScheme();
+        if(Input.GetKeyDown(KeyCode.D))
+            NextTargetScheme();
+        //End debugging purposes
+    }
+
+    private void FixedUpdate()
+    {
+        if(m_currentTarget)
+        {
+            //Set animator fire bool to true
+            animator.SetBool("Fire", true);
+            Vector2 difference = m_currentTarget.transform.position - transform.position;
+            transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(difference.y, difference.x) / Mathf.PI * 180);
+        }
+        else
+        {
+            //Set animator fire bool to false
+            animator.SetBool("Fire", false);
+        }
     }
 
     private void CompareFirstTarget(Collider2D other)
@@ -49,10 +85,19 @@ public class Tower : MonoBehaviour
             m_currentTarget = otherEnemy;
             return;
         }
-        //Compare percent distances of the 2 enemies
+
 
         if(otherEnemy.GetPercentDistanceTraveled() > m_currentTarget.GetPercentDistanceTraveled())
             m_currentTarget = otherEnemy;
+        else if(otherEnemy != m_currentTarget && !m_nextTarget)
+            m_nextTarget = otherEnemy;
+        else if(m_nextTarget)
+        {
+            if(m_nextTarget == m_currentTarget)
+                m_nextTarget = null;
+            else if(otherEnemy.GetPercentDistanceTraveled() > m_nextTarget.GetPercentDistanceTraveled())
+                m_nextTarget = otherEnemy;
+        }
     }
     
     private void CompareLastTarget(Collider2D other)
@@ -63,8 +108,18 @@ public class Tower : MonoBehaviour
             m_currentTarget = otherEnemy;
             return;
         }
+
         if(otherEnemy.GetPercentDistanceTraveled() < m_currentTarget.GetPercentDistanceTraveled())
             m_currentTarget = otherEnemy;
+        else if(otherEnemy != m_currentTarget && !m_nextTarget)
+            m_nextTarget = otherEnemy;
+        else if(m_nextTarget)
+        {
+            if(m_nextTarget == m_currentTarget)
+                m_nextTarget = null;
+            else if(otherEnemy.GetPercentDistanceTraveled() < m_nextTarget.GetPercentDistanceTraveled())
+                m_nextTarget = otherEnemy;
+        }
     }
     
     private void CompareClosestTarget(Collider2D other)
@@ -81,6 +136,19 @@ public class Tower : MonoBehaviour
 
         if(distanceToOtherEnemy < distanceToCurrent)
             m_currentTarget = otherEnemy;
+        else if(otherEnemy != m_currentTarget && !m_nextTarget)
+            m_nextTarget = otherEnemy;
+        else if(m_nextTarget)
+        {
+            if(m_nextTarget == m_currentTarget)
+                m_nextTarget = null;
+            else
+            {
+                float distanceToNext = Vector3.Distance(transform.position, m_nextTarget.transform.position);
+                if(distanceToOtherEnemy < distanceToNext)
+                    m_nextTarget = otherEnemy;
+            }
+        }
     }
     
     private void CompareStrongestTarget(Collider2D other)
@@ -94,6 +162,15 @@ public class Tower : MonoBehaviour
 
         if(otherEnemy.health > m_currentTarget.health)
             m_currentTarget = otherEnemy;
+        else if(otherEnemy != m_currentTarget && !m_nextTarget)
+            m_nextTarget = otherEnemy;
+        else if(m_nextTarget)
+        {
+            if(m_nextTarget == m_currentTarget)
+                m_nextTarget = null;
+            else if(otherEnemy.health > m_nextTarget.health)
+                m_nextTarget = otherEnemy;
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -110,40 +187,10 @@ public class Tower : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.GetComponent<Enemy>() == m_currentTarget)
-            m_currentTarget = null;
-    }
-
-    public void Start()
-    {
-        GetComponent<CircleCollider2D>().radius = range;
-        transform.localScale = new Vector3(unitSize, unitSize, 1);
-        animator.speed = attackSpeed;
-    }
-
-    public void Update()
-    {
-        //For debugging purposes
-        if(Input.GetKeyDown(KeyCode.A))
-            PreviousTargetScheme();
-        if(Input.GetKeyDown(KeyCode.D))
-            NextTargetScheme();
-        //End debugging purposes
-    }
-
-    public void FixedUpdate()
-    {
-        if(m_currentTarget)
+        if(collision.gameObject == m_currentTarget.gameObject)
         {
-            //Set animator fire bool to true
-            animator.SetBool("Fire", true);
-            Vector2 difference = m_currentTarget.transform.position - transform.position;
-            transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(difference.y, difference.x) / Mathf.PI * 180);
-        }
-        else
-        {
-            //Set animator fire bool to false
-            animator.SetBool("Fire", false);
+            m_currentTarget = m_nextTarget;
+            m_nextTarget = null;
         }
     }
 
