@@ -24,7 +24,6 @@ public class Projectile : MonoBehaviour
         {
             enemy.ApplyDamage(damage);
         }
-        Debug.Log(collision.gameObject.name);
     }
 
     private void FixedUpdate()

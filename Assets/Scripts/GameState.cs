@@ -15,12 +15,16 @@ public class GameState : MonoBehaviour
 
     public static GameState instance { get; private set; }
 
+    public List<Tower> towers { get; private set; }
+
     private void Awake()
     {
         if(instance)
             Destroy(gameObject);
         instance = this;
         SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+
+        towers = new List<Tower>(Resources.LoadAll<Tower>("Tower/"));
 
         List<Wave> waves = new List<Wave>();
         List<EnemySpawnBatch> enemySpawnBatches = new List<EnemySpawnBatch>();
