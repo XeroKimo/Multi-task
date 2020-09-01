@@ -5,6 +5,9 @@ using System.Security.Cryptography;
 //using System.Numerics;
 using UnityEngine;
 
+/*
+ * Need to add a few places for alternate input for controller
+ */
 public class PlayerInputScript : MonoBehaviour
 {
     [SerializeField]
@@ -98,6 +101,12 @@ public class PlayerInputScript : MonoBehaviour
         }
     }
 
+    /*
+     * This Function will serve as the index tracker for what tower in the list will currently be selected
+     * TODO
+     * - Need to merge other branch to get the game state so i can read from the list of towers
+     * - Add a controller input for increasing/decreasing the index
+     */
     protected void HandleQuickSelectBarInput(int InputDir)
     {
         //Handle the left/right movement of the highlighted quick select item
@@ -111,6 +120,9 @@ public class PlayerInputScript : MonoBehaviour
        
     }
 
+    /*
+     * This will be the function called when a button is pressed that will display the tower info from the list at the current index
+     */
     protected void DisplayCurrentSelectedTowerInfo()
     {
         //Display the current selected tower info for player
