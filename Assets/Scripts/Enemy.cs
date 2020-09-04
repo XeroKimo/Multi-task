@@ -15,7 +15,7 @@ public class Enemy : MonoBehaviour
     [SerializeField]
     private int m_maxHealth;
 
-    public Spline2DRoadComponent path { get; private set; }
+    public Spline2DRoadComponent path;
     public float distanceTraveled { get; private set; }
 
     public delegate void OnDeath(Enemy enemy);
