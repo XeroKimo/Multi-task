@@ -14,7 +14,7 @@ public class Pool : MonoBehaviour
 
         for (int i = 0; i < capacity; i++)
         {
-            GameObject obj = (GameObject)Instantiate(prefab);
+            GameObject obj = (GameObject)Instantiate(prefab, transform);
             obj.SetActive(false);
             this.inactive.Push(obj);
         }
