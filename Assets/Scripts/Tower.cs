@@ -80,7 +80,7 @@ public class Tower : MonoBehaviour
     {
         if(!m_enemyDetector.currentTarget)
             return;
-        Projectile projectile = Instantiate<Projectile>(projectilePrefab, transform.position, Quaternion.identity);
+        Projectile projectile = ProjectilePool.instance.Spawn(transform.position, Quaternion.identity).GetComponent<Projectile>();
         projectile.SetDamage(damage);
         projectile.SetVelocity((m_enemyDetector.currentTarget.transform.position - transform.position) * projectileSpeed);
     }

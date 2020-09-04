@@ -133,7 +133,7 @@ MonoBehaviour:
     type: 3}
   damage: 5
   projectileSpeed: 3
-  unitSize: 1
+  unitSize: 0.5
   range: 2
   animator: {fileID: 5210607282740127905}
 --- !u!1 &5210607281221869061

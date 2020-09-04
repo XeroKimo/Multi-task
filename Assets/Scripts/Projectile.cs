@@ -9,8 +9,8 @@ public class Projectile : MonoBehaviour
     private Rigidbody2D cRigidbody;
     private Tower source;
 
-    public delegate void OnDeath();
-    public event OnDeath onDeathEvent;
+    //public delegate void OnDeath();
+    //public event OnDeath onDeathEvent;
 
     void Awake()
     {
@@ -31,7 +31,8 @@ public class Projectile : MonoBehaviour
         cRigidbody.MovePosition(transform.position + new Vector3(velocity.x, velocity.y) * Time.fixedDeltaTime);
         if (isOutOfBounds())
         {
-            onDeathEvent?.Invoke();
+            //onDeathEvent?.Invoke();
+            ProjectilePool.instance.Despawn(this.gameObject);
         }
     }
 
