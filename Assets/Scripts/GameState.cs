@@ -13,6 +13,8 @@ public class GameState : MonoBehaviour
     List<Spline2DRoadComponent> m_paths;
     WaveManager m_waveManager;
 
+    public GameObject objectStretch;
+
     public static GameState instance { get; private set; }
 
     public List<Tower> towers { get; private set; }

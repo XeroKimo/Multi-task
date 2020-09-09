@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class EnemyPool : Pool
 {
-    static EnemyPool instance;
+    static public EnemyPool instance;
 
     public override void Awake()
     {

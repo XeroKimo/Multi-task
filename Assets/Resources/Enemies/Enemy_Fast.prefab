@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 447314888356846673}
   - component: {fileID: 4445431720285767296}
+  - component: {fileID: 3093810446045944202}
   m_Layer: 0
   m_Name: Enemy_Fast
   m_TagString: Untagged
@@ -48,6 +49,25 @@ MonoBehaviour:
   speed: 5
   money: 0
   m_maxHealth: 20
+  path: {fileID: 0}
+  spriteRenderer: {fileID: 8368540769234168761}
+  animator: {fileID: 8368540769234168760}
+--- !u!58 &3093810446045944202
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8445080794440742488}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.14
 --- !u!1001 &8664170310735408732
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -120,6 +140,18 @@ PrefabInstance:
 --- !u!4 &8368540769234168767 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 873231600363308515, guid: 6b9997be004b95c4fb624b8e064e4463,
+    type: 3}
+  m_PrefabInstance: {fileID: 8664170310735408732}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8368540769234168760 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 873231600363308516, guid: 6b9997be004b95c4fb624b8e064e4463,
+    type: 3}
+  m_PrefabInstance: {fileID: 8664170310735408732}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &8368540769234168761 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 873231600363308517, guid: 6b9997be004b95c4fb624b8e064e4463,
     type: 3}
   m_PrefabInstance: {fileID: 8664170310735408732}
   m_PrefabAsset: {fileID: 0}

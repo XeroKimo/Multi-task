@@ -22,6 +22,10 @@ public class PlayerInputScript : MonoBehaviour
     public GameObject[]         m_TowerTemplateObjects = new GameObject[0];
     public Rigidbody            m_BulletTemplateObject;
 
+    [SerializeField]
+    Player m_player;
+
+
     protected void HandlePlayerMovement()
     {
         Vector2 CurrentPosition = gameObject.transform.position;
@@ -63,6 +67,12 @@ public class PlayerInputScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        
+    }
+
+    private void Update()
+    {
+        m_player.HandleInput();
     }
 
     // Update is called once per frame

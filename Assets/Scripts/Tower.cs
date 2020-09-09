@@ -84,4 +84,13 @@ public class Tower : MonoBehaviour
         projectile.SetDamage(damage);
         projectile.SetVelocity((m_enemyDetector.currentTarget.transform.position - transform.position) * projectileSpeed);
     }
+
+    public void NextTargetSceme()
+    {
+        m_enemyDetector.NextTargetScheme();
+    }
+    public void PreviousTargetScheme()
+    {
+        m_enemyDetector.PreviousTargetScheme();
+    }
 }

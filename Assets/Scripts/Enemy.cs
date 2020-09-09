@@ -22,6 +22,17 @@ public class Enemy : MonoBehaviour
     public event OnDeath onDeath;
     public event OnDeath onPathFinished;
 
+    [SerializeField]
+    private SpriteRenderer spriteRenderer;
+    [SerializeField]
+    private Animator animator;
+
+
+    private void Awake()
+    {
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        animator = GetComponentInChildren<Animator>();
+    }
 
     public void OnEnable()
     {
@@ -29,14 +40,21 @@ public class Enemy : MonoBehaviour
 
     public void FixedUpdate()
     {
+        Vector3 oldPos = transform.position;
         distanceTraveled += speed * Time.fixedDeltaTime;
         transform.position = path.InterpolateDistanceWorldSpace(distanceTraveled);
+
+        Vector3 posDiff = transform.position - oldPos;
+        transform.rotation = Quaternion.Euler(0, 0, Mathf.Atan2(posDiff.y, posDiff.x) / Mathf.PI * 180);
+
 
         if(distanceTraveled > path.Length)
         {
             onPathFinished?.Invoke(this);
-            Destroy(gameObject);    //For Debugging
+            //Destroy(gameObject);    //For Debugging
             //gameObject.SetActive(false);
+
+            EnemyPool.instance.Despawn(gameObject);
         }
     }
 
@@ -46,7 +64,8 @@ public class Enemy : MonoBehaviour
         if(health < 0)
         {
             onDeath?.Invoke(this);
-            Destroy(gameObject);    //For Debugging
+            //Destroy(gameObject);    //For Debugging
+            EnemyPool.instance.Despawn(gameObject);
             //gameObject.SetActive(false);
         }
     }
@@ -65,4 +84,15 @@ public class Enemy : MonoBehaviour
     {
         return path.DistanceToLinearT(distanceTraveled);
     }
+
+    public void ConfigureEnemy(Enemy baseEnemy)
+    {
+        animator.runtimeAnimatorController = baseEnemy.animator.runtimeAnimatorController;
+        spriteRenderer.sprite = baseEnemy.spriteRenderer.sprite;
+
+        damage = baseEnemy.damage;
+        speed = baseEnemy.speed;
+        money = baseEnemy.money;
+        m_maxHealth = baseEnemy.m_maxHealth;
+}
 }
