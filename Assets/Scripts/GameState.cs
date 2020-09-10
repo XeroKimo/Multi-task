@@ -6,8 +6,8 @@ using UnityEngine.SceneManagement;
 
 public class GameState : MonoBehaviour
 {
-    int m_currency;
-    int m_lives;
+    public int currency { get; private set; }
+    public int lives { get; private set; }
 
     [SerializeField]
     List<Spline2DRoadComponent> m_paths;
@@ -25,6 +25,9 @@ public class GameState : MonoBehaviour
             Destroy(gameObject);
         instance = this;
         SceneManager.sceneUnloaded += SceneManager_sceneUnloaded;
+
+        lives = 100;
+        currency = 300;
 
         towers = new List<Tower>(Resources.LoadAll<Tower>("Tower/"));
 
@@ -54,7 +57,7 @@ public class GameState : MonoBehaviour
 
     private void Enemy_onPathFinished(Enemy enemy)
     {
-        m_lives -= enemy.damage;
+        lives -= enemy.damage;
         enemy.onDeath -= Enemy_onDeath;
         enemy.onPathFinished -= Enemy_onPathFinished;
     }
@@ -66,15 +69,15 @@ public class GameState : MonoBehaviour
 
     public void AddCurrency(int amount)
     {
-        m_currency += amount;
+        currency += amount;
     }
 
     public bool SpendCurrency(int amount)
     {
-        if(amount < m_currency)
+        if(currency < amount)
             return false;
 
-        m_currency -= amount;
+        currency -= amount;
         return true;
     }
 

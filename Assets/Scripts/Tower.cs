@@ -18,6 +18,8 @@ public class Tower : MonoBehaviour
     public int projectileSpeed;
     public float unitSize;
     public float range;
+    public int cost;
+    public TargetScheme targetScheme { get => m_enemyDetector.targetScheme; }
 
     public Animator animator;
 
@@ -48,16 +50,6 @@ public class Tower : MonoBehaviour
         unitHitbox.radius = unitSize;
         //transform.localScale = new Vector3(unitSize, unitSize, 1);
         animator.speed = attackSpeed;
-    }
-
-    private void Update()
-    {
-        //For debugging purposes
-        if(Input.GetKeyDown(KeyCode.A))
-            m_enemyDetector.PreviousTargetScheme();
-        if(Input.GetKeyDown(KeyCode.D))
-            m_enemyDetector.NextTargetScheme();
-        //End debugging purposes
     }
 
     private void FixedUpdate()

@@ -15,10 +15,42 @@ public class Player : MonoBehaviour
 
     Vector3 previousMouseInput = Vector3.zero;
     Vector2 previousLookInput = Vector2.zero;
+
+    public Tower nearestTower { get; private set; }
+    public float unitSize { get; private set; }
+    public PlayerTowerDetector playerTowerDetector;
     // Start is called before the first frame update
     void Start()
     {
         animator.speed = attackSpeed;
+        unitSize = GetComponent<CircleCollider2D>().radius;
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        if(collision.gameObject.layer == LayerMask.NameToLayer("Unit Collider"))
+        {
+            if(nearestTower)
+            {
+                float nearestTowerDistance = (nearestTower.transform.position - transform.position).sqrMagnitude;
+                float colliderDistance = (collision.transform.position - transform.position).sqrMagnitude;
+
+                if(colliderDistance < nearestTowerDistance)
+                    nearestTower = collision.gameObject.GetComponentInParent<Tower>();
+            }
+            else
+            {
+                nearestTower = collision.gameObject.GetComponentInParent<Tower>();
+            }
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if(nearestTower && collision.gameObject == nearestTower.gameObject)
+        {
+            nearestTower = null;
+        }
     }
 
     // Update is called once per frame
@@ -28,6 +60,7 @@ public class Player : MonoBehaviour
         //Debug.Log(Input.GetButton("Confirm"));
         //Debug.Log(m_useController);
         HandleInput();
+        //Debug.Log(nearestTower);
     }
 
     public void HandleInput()
