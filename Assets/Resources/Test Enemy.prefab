@@ -150,6 +150,9 @@ MonoBehaviour:
   speed: 1
   money: 0
   m_maxHealth: 200
+  path: {fileID: 0}
+  spriteRenderer: {fileID: 2822525071425759241}
+  animator: {fileID: 2846021122619184973}
 --- !u!58 &786212242561589232
 CircleCollider2D:
   m_ObjectHideFlags: 0

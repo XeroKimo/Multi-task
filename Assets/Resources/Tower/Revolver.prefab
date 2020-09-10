@@ -295,6 +295,7 @@ MonoBehaviour:
     type: 3}
   damage: 5
   projectileSpeed: 3
-  unitSize: 1
+  unitSize: 0.14
   range: 2
+  cost: 100
   animator: {fileID: 1830109294840685548}

@@ -18,6 +18,8 @@ public class Tower : MonoBehaviour
     public int projectileSpeed;
     public float unitSize;
     public float range;
+    public int cost;
+    public TargetScheme targetScheme { get => m_enemyDetector.targetScheme; }
 
     public Animator animator;
 
@@ -50,16 +52,6 @@ public class Tower : MonoBehaviour
         animator.speed = attackSpeed;
     }
 
-    private void Update()
-    {
-        //For debugging purposes
-        if(Input.GetKeyDown(KeyCode.A))
-            m_enemyDetector.PreviousTargetScheme();
-        if(Input.GetKeyDown(KeyCode.D))
-            m_enemyDetector.NextTargetScheme();
-        //End debugging purposes
-    }
-
     private void FixedUpdate()
     {
         if(m_enemyDetector.currentTarget)
@@ -83,5 +75,14 @@ public class Tower : MonoBehaviour
         Projectile projectile = ProjectilePool.instance.Spawn(transform.position, Quaternion.Euler(0, 0, transform.rotation.eulerAngles.z - 90)).GetComponent<Projectile>();
         projectile.SetDamage(damage);
         projectile.SetVelocity((m_enemyDetector.currentTarget.transform.position - transform.position) * projectileSpeed);
+    }
+
+    public void NextTargetSceme()
+    {
+        m_enemyDetector.NextTargetScheme();
+    }
+    public void PreviousTargetScheme()
+    {
+        m_enemyDetector.PreviousTargetScheme();
     }
 }

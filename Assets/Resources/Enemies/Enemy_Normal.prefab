@@ -10,9 +10,10 @@ GameObject:
   m_Component:
   - component: {fileID: 7337841840312545734}
   - component: {fileID: 6796273077860707095}
+  - component: {fileID: 3318215527071949849}
   m_Layer: 0
   m_Name: Enemy_Normal
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -49,6 +50,24 @@ MonoBehaviour:
   money: 0
   m_maxHealth: 20
   path: {fileID: 0}
+  spriteRenderer: {fileID: 8869898957740316819}
+  animator: {fileID: 8869898957740316818}
+--- !u!58 &3318215527071949849
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1644547233926749135}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.18
 --- !u!1001 &6634675301912171918
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -121,6 +140,18 @@ PrefabInstance:
 --- !u!4 &8869898957740316821 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2813390854539988251, guid: 616e417502e7e7647ae863ad6bf8160e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6634675301912171918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &8869898957740316818 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 2813390854539988252, guid: 616e417502e7e7647ae863ad6bf8160e,
+    type: 3}
+  m_PrefabInstance: {fileID: 6634675301912171918}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &8869898957740316819 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 2813390854539988253, guid: 616e417502e7e7647ae863ad6bf8160e,
     type: 3}
   m_PrefabInstance: {fileID: 6634675301912171918}
   m_PrefabAsset: {fileID: 0}

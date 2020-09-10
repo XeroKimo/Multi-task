@@ -14,14 +14,14 @@ public class TowerEnemyDetector : MonoBehaviour
 {
     private delegate void TargetFunction(Collider2D other);
 
-    private TargetScheme m_targetScheme;
+    public TargetScheme targetScheme { get; private set; }
     private TargetFunction m_targetFunction;
     public Enemy currentTarget { get; private set; }
     private Enemy m_nextTarget;
 
     private void Awake()
     {
-        m_targetScheme = TargetScheme.First;
+        targetScheme = TargetScheme.First;
         m_targetFunction = CompareFirstTarget;
         currentTarget = null;
     }
@@ -32,6 +32,7 @@ public class TowerEnemyDetector : MonoBehaviour
         if(!currentTarget)
         {
             currentTarget = otherEnemy;
+            OnEnemyChanged(null, currentTarget);
             return;
         }
 
@@ -45,7 +46,11 @@ public class TowerEnemyDetector : MonoBehaviour
             if(m_nextTarget == currentTarget)
                 m_nextTarget = null;
             else if(otherEnemy.GetPercentDistanceTraveled() > m_nextTarget.GetPercentDistanceTraveled())
-                m_nextTarget = otherEnemy;
+            {
+                Enemy target = currentTarget;
+                currentTarget = otherEnemy;
+                OnEnemyChanged(target, currentTarget);
+            }
         }
     }
 
@@ -55,6 +60,7 @@ public class TowerEnemyDetector : MonoBehaviour
         if(!currentTarget)
         {
             currentTarget = otherEnemy;
+            OnEnemyChanged(null, currentTarget);
             return;
         }
 
@@ -67,7 +73,11 @@ public class TowerEnemyDetector : MonoBehaviour
             if(m_nextTarget == currentTarget)
                 m_nextTarget = null;
             else if(otherEnemy.GetPercentDistanceTraveled() < m_nextTarget.GetPercentDistanceTraveled())
-                m_nextTarget = otherEnemy;
+            {
+                Enemy target = currentTarget;
+                currentTarget = otherEnemy;
+                OnEnemyChanged(target, currentTarget);
+            }
         }
     }
 
@@ -77,6 +87,7 @@ public class TowerEnemyDetector : MonoBehaviour
         if(!currentTarget)
         {
             currentTarget = otherEnemy;
+            OnEnemyChanged(null, currentTarget);
             return;
         }
 
@@ -95,7 +106,11 @@ public class TowerEnemyDetector : MonoBehaviour
             {
                 float distanceToNext = Vector3.Distance(transform.position, m_nextTarget.transform.position);
                 if(distanceToOtherEnemy < distanceToNext)
-                    m_nextTarget = otherEnemy;
+                {
+                    Enemy target = currentTarget;
+                    currentTarget = otherEnemy;
+                    OnEnemyChanged(target, currentTarget);
+                }
             }
         }
     }
@@ -106,11 +121,16 @@ public class TowerEnemyDetector : MonoBehaviour
         if(!currentTarget)
         {
             currentTarget = otherEnemy;
+            OnEnemyChanged(null, currentTarget);
             return;
         }
 
         if(otherEnemy.health > currentTarget.health)
+        {
+            Enemy target = currentTarget;
             currentTarget = otherEnemy;
+            OnEnemyChanged(target, currentTarget);
+        }
         else if(otherEnemy != currentTarget && !m_nextTarget)
             m_nextTarget = otherEnemy;
         else if(m_nextTarget)
@@ -136,32 +156,56 @@ public class TowerEnemyDetector : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if(collision.gameObject == currentTarget.gameObject)
+        if(currentTarget && collision.gameObject == currentTarget.gameObject)
         {
+            Enemy target = currentTarget;
             currentTarget = m_nextTarget;
             m_nextTarget = null;
+
+            OnEnemyChanged(target, currentTarget);
+        }
+    }
+
+    void OnEnemyChanged(Enemy oldEnemy, Enemy newEnemy)
+    {
+        if(oldEnemy)
+        {
+            oldEnemy.onDeath -= OldEnemy_onDeath;
+            oldEnemy.onPathFinished -= OldEnemy_onDeath;
+        }
+        if(newEnemy)
+        {
+            newEnemy.onDeath += OldEnemy_onDeath;
+            newEnemy.onPathFinished += OldEnemy_onDeath;
         }
     }
 
 
+    private void OldEnemy_onDeath(Enemy enemy)
+    {
+        currentTarget = null;
+        OnEnemyChanged(enemy, null);
+        m_nextTarget = null;
+    }
+
     public void NextTargetScheme()
     {
-        m_targetScheme = (TargetScheme)(((int)m_targetScheme + 1) % 4);
+        targetScheme = (TargetScheme)(((int)targetScheme + 1) % 4);
         SelectTargetFunction();
     }
 
     public void PreviousTargetScheme()
     {
-        int targetScheme = (int)m_targetScheme - 1;
+        int targetScheme = (int)this.targetScheme - 1;
         if(targetScheme < 0)
             targetScheme += 4;
-        m_targetScheme = (TargetScheme)targetScheme;
+        this.targetScheme = (TargetScheme)targetScheme;
         SelectTargetFunction();
     }
 
     private void SelectTargetFunction()
     {
-        switch(m_targetScheme)
+        switch(targetScheme)
         {
         case TargetScheme.First:
             m_targetFunction = CompareFirstTarget;

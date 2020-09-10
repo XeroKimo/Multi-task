@@ -83,8 +83,10 @@ public class WaveManager
                 }
                 else if((m_framesSinceWaveStart % batch.frameDelayBetweenSpawns == batch.firstSpawnFrameDelay % batch.frameDelayBetweenSpawns) && (m_framesSinceWaveStart >= batch.firstSpawnFrameDelay))
                 {
-                    Enemy enemy = GameObject.Instantiate(m_enemyTypes[batch.enemyType]);
+                    Enemy enemy = EnemyPool.instance.Spawn(Vector3.zero, Quaternion.identity).GetComponent<Enemy>();
+                    //Enemy enemy = GameObject.Instantiate(m_enemyTypes[batch.enemyType]);
                     aliveEnemies.Add(enemy);
+                    enemy.ConfigureEnemy(m_enemyTypes[batch.enemyType]);
 
                     enemy.Reset(m_paths[(m_selectedPath++) % m_paths.Count]);
                     enemy.onDeath += Enemy_onDeath;

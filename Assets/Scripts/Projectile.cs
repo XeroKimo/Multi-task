@@ -23,6 +23,7 @@ public class Projectile : MonoBehaviour
         if (enemy)
         {
             enemy.ApplyDamage(damage);
+            ProjectilePool.instance.Despawn(this.gameObject);
         }
     }
 
